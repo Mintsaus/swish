@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SignalRChat.Hubs;
 
 namespace SignalRChat
 {
@@ -33,6 +34,8 @@ namespace SignalRChat
 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -54,6 +57,10 @@ namespace SignalRChat
             app.UseCookiePolicy();
 
             app.UseMvc();
+
+            app.UseSignalR(routes => {
+                routes.MapHub<ChatHub>("/chatHub");
+            });
         }
     }
 }
