@@ -1,7 +1,7 @@
 "use strict";
 
 var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
-var pin = "1234";
+var globalPin = null;
 
 connection.on("ReceiveMessage", function (swishNr, amount, message) {
     var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -10,9 +10,20 @@ connection.on("ReceiveMessage", function (swishNr, amount, message) {
     document.getElementById("message").innerText = msg;
 });
 
-connection.start().then(function () {
-    connection.invoke("AddToGroup", pin);
-}).catch(function (err) {
+connection.start()
+.then(function () {
+})
+.catch(function (err) {
     return console.error(err.toString());
 });
 
+document.getElementById("pinButton").addEventListener("click", event => {
+    var pin = document.getElementById("pinInput").value;
+    console.log(pin);
+    
+    if(globalPin != null) {
+        connection.invoke("RemoveFromGroup", globalPin);
+    }
+    globalPin = pin;
+    connection.invoke("AddToGroup", globalPin);
+});
