@@ -3,7 +3,9 @@
 var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
 var globalPin = null;
 
-connection.on("ReceiveMessage", function (swishNr, amount, message) {
+connection.on("ReceiveMessage", function (swishNr, amount, message, img) {
+    console.log(img);
+    
     var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     document.getElementById("swishNr").innerText = swishNr;
     document.getElementById("amount").innerText = amount;
@@ -20,7 +22,7 @@ connection.start()
 document.getElementById("pinButton").addEventListener("click", event => {
     var pin = document.getElementById("pinInput").value;
     console.log(pin);
-    
+
     if(globalPin != null) {
         connection.invoke("RemoveFromGroup", globalPin);
     }
